@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" onclick="jump()"> 
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>The Bounce Game</title>
+</head><br><br>
+<body>
+    <div id="score"></div>
+    <div id="star">level: 1</div>
+        
+    <div id="game">
+        <div id="pole"></div>
+        <div id="player"></div>
+    </div>
+    <script>
+        var pole = document.getElementById("pole");
+        var ball = document.getElementById("player");
+        var score=document.getElementById("score");
+        var stars=document.getElementById("star");
+        
+        var counter=0;
+        
+        // pole height and size animation
+        pole.addEventListener("animationiteration",function(){
+
+            var randomHeight =Math.random()*200;
+            pole.style.height=randomHeight+"px";
+            var randomTop =Math.random()*250;
+            pole.style.top=randomTop+"px";
+            counter++;
+            levelUp(counter);
+        });
+
+        // gravity of the ball & Game over
+        setInterval(function(){
+
+            var ballTop = parseInt(window.getComputedStyle(ball).getPropertyValue("top"));
+            ball.style.top= (ballTop+2)+"px";
+
+            var poleDim = pole.getBoundingClientRect();
+            var ballDim =ball.getBoundingClientRect();
+            var poleHeight=parseInt(window.getComputedStyle(pole).getPropertyValue("height"));
+
+            var poleTop = parseInt(window.getComputedStyle(pole).getPropertyValue("top"));
+            var poleBottom = parseInt(window.getComputedStyle(pole).getPropertyValue("bottom"));
+
+            console.log(450-poleBottom-poleTop);
+            if(ballTop>454 || ballTop<=24 || (ballDim.y>=poleDim.y && poleDim.x-ballDim.x<30 && ballDim.y<poleDim.height+100) ||
+                (poleDim.y-ballDim.y<30 && poleDim.y-ballDim.y>0 && poleDim.x-ballDim.x<30) )
+                   {//&& ballDim.y<=poleHeight
+
+                alert("GAME OVER\nScore: "+counter);
+                ball.style.top=100+"px";
+                pole.style.animation="none";    
+                location.reload();            
+
+            }
+        },10);
+
+        //jumpimg of ball
+        function jump(){
+
+            var jumping=1;
+            let jumpCount=0;
+
+            var jumpInterval = setInterval(function(){
+
+                var ballTop = parseInt(window.getComputedStyle(ball).getPropertyValue("top"));
+
+               if(ballTop>6 && jumpCount<15)
+               {
+                    ball.style.top= (ballTop-6)+"px";
+               }
+               if (jumpCount>20){
+
+                    clearInterval(jumpInterval);
+                    jumping=0;
+                    jumpCount=0;
+                }
+                jumpCount++;
+            },10);
+
+        }
+        //score
+        setInterval(function(){
+
+            score.innerHTML="score: "+counter;
+        },0.1);
+
+        function levelUp(value){
+
+            if(value==5){
+
+                stars.innerHTML="level: 2";
+                pole.style.borderWidth=9+"px";
+                ball.style.borderWidth=4+"px";
+                
+            }
+            if(value==10){
+
+                stars.innerHTML="level: 3";
+                pole.style.borderWidth=11+"px";
+                ball.style.borderWidth=5+"px";
+            }
+            if(value==15){
+
+                stars.innerHTML="level: 4";
+                pole.style.borderWidth=15+"px";
+                pole.style.width=40+"px";
+                ball.style.borderWidth=7+"px";
+            }
+            if(value==20){
+
+                stars.innerHTML="level: 5";
+                pole.style.borderWidth=25+"px";
+                pole.style.width=45+"px";
+                ball.style.borderWidth=9+"px";
+            }
+        }
+    </script>
+</body>
+</html>
